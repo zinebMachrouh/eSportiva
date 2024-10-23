@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.util.List;
+import java.util.UUID;
 
 public class TournamentRepositoryImpl implements TournamentRepository {
 
@@ -65,7 +66,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament getTournament(String id) {
+    public Tournament getTournament(UUID id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             return entityManager.find(Tournament.class, id);
@@ -78,7 +79,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament attachTeam(String tournamentId, String teamId) {
+    public Tournament attachTeam(UUID tournamentId, UUID teamId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -106,7 +107,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament detachTeam(String tournamentId, String teamId) {
+    public Tournament detachTeam(UUID tournamentId, UUID teamId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -134,7 +135,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament attachGame(String tournamentId, String gameId) {
+    public Tournament attachGame(UUID tournamentId, UUID gameId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -162,7 +163,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament detachGame(String tournamentId, String gameId) {
+    public Tournament detachGame(UUID tournamentId, UUID gameId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {

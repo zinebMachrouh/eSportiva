@@ -28,6 +28,9 @@ public class Team {
 
     private List<Tournament> tournaments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Gamer> gamers = new ArrayList<>();
+
     public Team() {
     }
 
@@ -91,6 +94,18 @@ public class Team {
         if (tournaments.contains(tournament)) {
             tournaments.remove(tournament);
             tournament.removeTeam(this);
+        }
+    }
+
+    public void addGamer(Gamer gamer) {
+        if (!this.gamers.contains(gamer)) {
+            this.gamers.add(gamer);
+        }
+    }
+
+    public void removeGamer(Gamer gamer) {
+        if (this.gamers.contains(gamer)) {
+            this.gamers.remove(gamer);
         }
     }
 }
