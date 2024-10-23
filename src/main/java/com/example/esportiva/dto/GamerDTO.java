@@ -1,42 +1,26 @@
-package com.example.esportiva.models;
+package com.example.esportiva.dto;
 
-import javax.persistence.*;
+import com.example.esportiva.models.Gamer;
+
 import java.util.UUID;
 
-@Entity
-@Table(name = "gamers")
-public class Gamer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class GamerDTO {
     private UUID id;
-
-    @Column(name = "username", nullable = false)
     private String username;
-
-    @Column(name="age", nullable = false)
     private Integer age;
+    private TeamDTO team;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id", nullable = true)
-    private Team team;
-
-    public Gamer() {
+    public GamerDTO() {
     }
 
-    public Gamer(String username, int age) {
-        this.id = UUID.randomUUID();
-        this.username = username;
-        this.age = age;
-    }
-
-    public Gamer(UUID id, String username, int age) {
+    public GamerDTO(UUID id, String username, Integer age, TeamDTO team) {
         this.id = id;
         this.username = username;
         this.age = age;
+        this.team = team;
     }
 
-    public Gamer(UUID id, String username, int age, Team team) {
-        this.id = id;
+    public GamerDTO(String username, Integer age, TeamDTO team) {
         this.username = username;
         this.age = age;
         this.team = team;
@@ -63,20 +47,29 @@ public class Gamer {
         this.age = age;
     }
 
-    public Team getTeam() {
+    public TeamDTO getTeam() {
         return team;
     }
-    public void setTeam(Team team) {
+    public void setTeam(TeamDTO team) {
         this.team = team;
     }
 
     @Override
     public String toString() {
-        return "Gamer{" +
+        return "GamerDTO{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", age=" + age +
+                ", team=" + team +
                 '}';
+    }
+
+    public Gamer dtoToModel() {
+        return new Gamer(this.id, this.username, this.age, this.team.dtoToModel());
+    }
+
+    public static GamerDTO modelToDTO(Gamer gamer) {
+        return new GamerDTO(gamer.getId(), gamer.getUsername(), gamer.getAge(), TeamDTO.modelToDTO(gamer.getTeam()));
     }
 
 }
