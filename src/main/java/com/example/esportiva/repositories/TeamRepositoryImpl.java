@@ -50,9 +50,14 @@ public class TeamRepositoryImpl implements TeamRepository {
             transaction = entityManager.getTransaction();
             transaction.begin();
 
+            if (team.getId() == null) {
+                throw new IllegalArgumentException("Team ID must be provided for update.");
+            }
+
             Team managedTeam = entityManager.merge(team);
 
             transaction.commit();
+
             return managedTeam;
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
@@ -66,7 +71,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     }
 
     @Override
-    public Team getTeam(UUID id) {
+    public Team getTeam(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             return entityManager.find(Team.class, id);
@@ -92,7 +97,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     }
 
     @Override
-    public Team attachGamer(UUID teamId, UUID gamerId) {
+    public Team attachGamer(Long teamId, Long gamerId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -102,7 +107,13 @@ public class TeamRepositoryImpl implements TeamRepository {
             Team team = entityManager.find(Team.class, teamId);
             Gamer gamer = entityManager.find(Gamer.class, gamerId);
             if (team != null && gamer != null) {
-                team.addGamer(gamer);
+                gamer.setTeam(team);
+
+                if (!team.getGamers().contains(gamer)) {
+                    team.addGamer(gamer);
+                }
+
+                entityManager.merge(gamer);
                 entityManager.merge(team);
             }
 
@@ -120,7 +131,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     }
 
     @Override
-    public Team detachGamer(UUID teamId, UUID gamerId) {
+    public Team detachGamer(Long teamId, Long gamerId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -131,6 +142,9 @@ public class TeamRepositoryImpl implements TeamRepository {
             Gamer gamer = entityManager.find(Gamer.class, gamerId);
             if (team != null && gamer != null) {
                 team.removeGamer(gamer);
+                gamer.setTeam(null);
+
+                entityManager.merge(gamer);
                 entityManager.merge(team);
             }
 
@@ -147,8 +161,9 @@ public class TeamRepositoryImpl implements TeamRepository {
         }
     }
 
+
     @Override
-    public Team attachTournament(UUID teamId, UUID tournamentId) {
+    public Team attachTournament(Long teamId, Long tournamentId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -158,8 +173,10 @@ public class TeamRepositoryImpl implements TeamRepository {
             Team team = entityManager.find(Team.class, teamId);
             Tournament tournament = entityManager.find(Tournament.class, tournamentId);
             if (team != null && tournament != null) {
-                team.addTournament(tournament);
-                entityManager.merge(team);
+                if (!team.getTournaments().contains(tournament)) {
+                    team.addTournament(tournament);
+                    entityManager.merge(team);
+                }
             }
 
             transaction.commit();
@@ -176,7 +193,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     }
 
     @Override
-    public Team detachTournament(UUID teamId, UUID tournamentId) {
+    public Team detachTournament(Long teamId, Long tournamentId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {

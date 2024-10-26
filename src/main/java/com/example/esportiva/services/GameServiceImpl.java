@@ -37,7 +37,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game getGame(UUID id) throws SQLException {
+    public Game getGame(Long id) throws SQLException {
         if (id == null) {
             throw new SQLException("Game id is null");
         }else {

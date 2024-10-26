@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface GameService {
     public Game addGame(GameDTO game) throws SQLException;
     public Game updateGame(GameDTO game) throws SQLException;
-    public Game getGame(UUID id) throws SQLException;
+    public Game getGame(Long id) throws SQLException;
     public List<Game> getAllGames() throws SQLException;
 }

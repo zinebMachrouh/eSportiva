@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface TeamRepository {
     public Team addTeam(Team team) throws SQLException;
     public Team updateTeam(Team team) throws SQLException;
-    public Team getTeam(UUID id) throws SQLException;
+    public Team getTeam(Long id) throws SQLException;
     public List<Team> getAllTeams() throws SQLException;
-    public Team attachGamer(UUID teamId, UUID playerId) throws SQLException;
-    public Team detachGamer(UUID teamId, UUID playerId) throws SQLException;
-    public Team attachTournament(UUID teamId, UUID tournamentId) throws SQLException;
-    public Team detachTournament(UUID teamId, UUID tournamentId) throws SQLException;
+    public Team attachGamer(Long teamId, Long playerId) throws SQLException;
+    public Team detachGamer(Long teamId, Long playerId) throws SQLException;
+    public Team attachTournament(Long teamId, Long tournamentId) throws SQLException;
+    public Team detachTournament(Long teamId, Long tournamentId) throws SQLException;
 }

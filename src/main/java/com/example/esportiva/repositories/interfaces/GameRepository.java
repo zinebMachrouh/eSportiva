@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface GameRepository {
     public Game addGame(Game game) throws SQLException;
     public Game updateGame(Game game) throws SQLException;
-    public Game getGame(UUID id) throws SQLException;
+    public Game getGame(Long id) throws SQLException;
     public List<Game> getAllGames() throws SQLException;
 }

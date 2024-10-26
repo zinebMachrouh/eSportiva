@@ -9,8 +9,8 @@ import java.util.UUID;
 public interface GamerService {
     public Gamer addGamer(GamerDTO gamer);
     public Gamer updateGamer(GamerDTO gamer);
-    public boolean deleteGamer(UUID id);
-    public Gamer getGamer(UUID id);
+    public boolean deleteGamer(Long id);
+    public Gamer getGamer(Long id);
     public List<Gamer> getAllGamers();
 
 }

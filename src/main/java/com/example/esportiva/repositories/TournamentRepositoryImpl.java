@@ -46,14 +46,20 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     public Tournament updateTournament(Tournament tournament) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            Tournament managedTournament = entityManager.merge(tournament);
+            if (tournament.getId() == null) {
+                throw new IllegalArgumentException("Cannot update Tournament without an ID.");
+            }
+
+            Tournament updatedTournament = entityManager.merge(tournament);
 
             transaction.commit();
-            return managedTournament;
+            return updatedTournament;
+
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
@@ -66,7 +72,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament getTournament(UUID id) {
+    public Tournament getTournament(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             return entityManager.find(Tournament.class, id);
@@ -79,7 +85,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament attachTeam(UUID tournamentId, UUID teamId) {
+    public Tournament attachTeam(Long tournamentId, Long teamId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -107,7 +113,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament detachTeam(UUID tournamentId, UUID teamId) {
+    public Tournament detachTeam(Long tournamentId, Long teamId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -135,7 +141,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament attachGame(UUID tournamentId, UUID gameId) {
+    public Tournament attachGame(Long tournamentId, Long gameId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -163,7 +169,7 @@ public class TournamentRepositoryImpl implements TournamentRepository {
     }
 
     @Override
-    public Tournament detachGame(UUID tournamentId, UUID gameId) {
+    public Tournament detachGame(Long tournamentId, Long gameId) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {

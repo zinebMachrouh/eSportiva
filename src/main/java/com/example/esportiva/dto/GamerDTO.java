@@ -5,7 +5,7 @@ import com.example.esportiva.models.Gamer;
 import java.util.UUID;
 
 public class GamerDTO {
-    private UUID id;
+    private Long id;
     private String username;
     private Integer age;
     private TeamDTO team;
@@ -13,7 +13,7 @@ public class GamerDTO {
     public GamerDTO() {
     }
 
-    public GamerDTO(UUID id, String username, Integer age, TeamDTO team) {
+    public GamerDTO(Long id, String username, Integer age, TeamDTO team) {
         this.id = id;
         this.username = username;
         this.age = age;
@@ -25,11 +25,21 @@ public class GamerDTO {
         this.age = age;
         this.team = team;
     }
+    public GamerDTO(Long id, String username, Integer age) {
+        this.id = id;
+        this.username = username;
+        this.age = age;
+    }
 
-    public UUID getId() {
+    public GamerDTO(String username, Integer age) {
+        this.username = username;
+        this.age = age;
+    }
+
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,11 +75,23 @@ public class GamerDTO {
     }
 
     public Gamer dtoToModel() {
-        return new Gamer(this.id, this.username, this.age, this.team.dtoToModel());
+        if (this.team == null) {
+            return new Gamer(this.id, this.username, this.age);
+        } else {
+            return new Gamer(this.id, this.username, this.age, this.team.dtoToModel());
+        }
+    }
+
+    public Gamer dtoToModel(Gamer gamer) {
+        return new Gamer(this.id, this.username, this.age);
     }
 
     public static GamerDTO modelToDTO(Gamer gamer) {
-        return new GamerDTO(gamer.getId(), gamer.getUsername(), gamer.getAge(), TeamDTO.modelToDTO(gamer.getTeam()));
+        if (gamer.getTeam() == null) {
+            return new GamerDTO(gamer.getId(), gamer.getUsername(), gamer.getAge());
+        } else {
+            return new GamerDTO(gamer.getId(), gamer.getUsername(), gamer.getAge(), TeamDTO.modelToDTO(gamer.getTeam()));
+        }
     }
 
 }

@@ -4,16 +4,15 @@ import com.example.esportiva.models.enums.TournamentStatus;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tournaments")
 public class Tournament {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -57,7 +56,7 @@ public class Tournament {
 
     public Tournament(){}
 
-    public Tournament(UUID id, String title, Date startDate, Date endDate, int spectators, int estimatedDuration, int breakDuration, int ceremonyDuration, TournamentStatus status, double prize, Game game) {
+    public Tournament(Long id, String title, Date startDate, Date endDate, int spectators, int estimatedDuration, int breakDuration, int ceremonyDuration, TournamentStatus status, double prize, Game game) {
         this.id = id;
         this.title = title;
         this.startDate = startDate;
@@ -72,7 +71,6 @@ public class Tournament {
     }
 
     public Tournament(String title, Date startDate, Date endDate, int spectators, int estimatedDuration, int breakDuration, int ceremonyDuration, TournamentStatus status, double prize, Game game) {
-        this.id = UUID.randomUUID();
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -85,10 +83,10 @@ public class Tournament {
         this.game = game;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

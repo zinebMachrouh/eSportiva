@@ -11,20 +11,25 @@ import com.example.esportiva.services.interfaces.GameService;
 import com.example.esportiva.services.interfaces.TeamService;
 import com.example.esportiva.services.interfaces.TournamentService;
 import com.example.esportiva.utils.InputValidation;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class TournamentController {
     private final TournamentService tournamentService;
     private final GameService gameService;
     private final TeamService teamService;
 
-    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TournamentController.class);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public TournamentController(TournamentService tournamentService, GameService gameService, TeamService teamService) {
         this.tournamentService = tournamentService;
@@ -35,89 +40,109 @@ public class TournamentController {
     public TournamentDTO addTournament() throws SQLException {
         logger.info("Adding a new tournament");
 
-        String title = System.console().readLine("Enter the title of the tournament: ");
-        while (InputValidation.handleString(title)) {
-            title = System.console().readLine("Enter the title of the tournament: ");
+        System.out.print("Enter the title of the tournament: ");
+        String title = scanner.nextLine();
+        while (!InputValidation.handleString(title)) {
+            System.out.print("Enter the title of the tournament: ");
+            title = scanner.nextLine();
         }
 
-        String startDate = System.console().readLine("Enter the start date of the tournament: ");
-        while (InputValidation.handleDate(startDate)) {
-            startDate = System.console().readLine("Enter the start date of the tournament: ");
+        System.out.print("Enter the start date of the tournament (yyyy-mm-dd): ");
+        String startDate = scanner.nextLine();
+        while (!InputValidation.handleDate(startDate)) {
+            System.out.print("Enter the start date of the tournament (yyyy-mm-dd): ");
+            startDate = scanner.nextLine();
         }
 
-        String endDate = System.console().readLine("Enter the end date of the tournament: ");
-        while (InputValidation.handleDate(endDate)) {
-            endDate = System.console().readLine("Enter the end date of the tournament: ");
+        System.out.print("Enter the end date of the tournament (yyyy-mm-dd): ");
+        String endDate = scanner.nextLine();
+        while (!InputValidation.handleDate(endDate)) {
+            System.out.print("Enter the end date of the tournament (yyyy-mm-dd): ");
+            endDate = scanner.nextLine();
         }
 
-        Integer spectators = Integer.parseInt(System.console().readLine("Enter the number of spectators: "));
-        while (InputValidation.handleNumber(spectators)) {
-            spectators = Integer.parseInt(System.console().readLine("Enter the number of spectators: "));
+        System.out.print("Enter the number of spectators: ");
+        Integer spectators = scanner.nextInt();
+        while (!InputValidation.handleNumber(spectators)) {
+            System.out.print("Enter the number of spectators: ");
+            spectators = scanner.nextInt();
         }
 
-        Integer breakDuration = Integer.parseInt(System.console().readLine("Enter the break duration: "));
-        while (InputValidation.handleNumber(breakDuration)) {
-            breakDuration = Integer.parseInt(System.console().readLine("Enter the break duration: "));
+        System.out.print("Enter the break duration: ");
+        Integer breakDuration = scanner.nextInt();
+        while (!InputValidation.handleNumber(breakDuration)) {
+            System.out.print("Enter the break duration: ");
+            breakDuration = scanner.nextInt();
         }
 
-        Integer ceremonyDuration = Integer.parseInt(System.console().readLine("Enter the ceremony duration: "));
-        while (InputValidation.handleNumber(ceremonyDuration)) {
-            ceremonyDuration = Integer.parseInt(System.console().readLine("Enter the ceremony duration: "));
+        System.out.print("Enter the ceremony duration: ");
+        Integer ceremonyDuration = scanner.nextInt();
+        while (!InputValidation.handleNumber(ceremonyDuration)) {
+            System.out.print("Enter the ceremony duration: ");
+            ceremonyDuration = scanner.nextInt();
         }
 
-        String status = System.console().readLine("Enter the status of the tournament (scheduled - ongoing - cancelled): ");
-        while (InputValidation.handleString(status)) {
-            status = System.console().readLine("Enter the status of the tournament (scheduled - ongoing - cancelled): ");
+        scanner.nextLine();
+        System.out.print("Enter the status of the tournament (scheduled - ongoing - cancelled): ");
+        String status = scanner.nextLine();
+        while (!InputValidation.handleString(status)) {
+            System.out.print("Enter the status of the tournament (scheduled - ongoing - cancelled): ");
+            status = scanner.nextLine();
         }
 
-        Double prize = Double.parseDouble(System.console().readLine("Enter the prize: "));
-        while (InputValidation.handleNumber(prize)) {
-            prize = Double.parseDouble(System.console().readLine("Enter the prize: "));
+        System.out.print("Enter the prize: ");
+        Double prize = scanner.nextDouble();
+        while (!InputValidation.handleNumber(prize)) {
+            System.out.print("Enter the prize: ");
+            prize = scanner.nextDouble();
         }
 
         List<Game> games = gameService.getAllGames();
         for (int i = 0; i < games.size(); i++) {
-            System.out.println(i + 1 + ". " + games.get(i).getName());
+            System.out.println((i + 1) + ". " + games.get(i).getName());
         }
-        Integer gameIndex = Integer.parseInt(System.console().readLine("Enter the index of the game: "));
+        System.out.print("Enter the index of the game: ");
+        int gameIndex = scanner.nextInt();
         Game game = null;
-        if (gameIndex < 0 || gameIndex >= games.size()) {
-            logger.error("Invalid game index");
-        } else if (String.valueOf(gameIndex).isEmpty()) {
-            logger.error("Game index cannot be empty");
-        } else {
+        if (gameIndex > 0 && gameIndex <= games.size()) {
             game = games.get(gameIndex - 1);
             logger.info("Successfully selected the game");
+        } else {
+            logger.error("Invalid game index");
         }
 
-        TournamentDTO tournament = new TournamentDTO(title, Date.valueOf(startDate), Date.valueOf(endDate), spectators,0, breakDuration, ceremonyDuration, TournamentStatus.valueOf(status), prize, GameDTO.modelToDTO(game));
-        Integer estimatedDuration = tournamentService.getEstimatedDuration(tournament);
-        tournament.setEstimatedDuration(estimatedDuration);
+        TournamentDTO tournament = new TournamentDTO(
+                title, Date.valueOf(startDate), Date.valueOf(endDate),
+                spectators, 0, breakDuration, ceremonyDuration,
+                TournamentStatus.valueOf(status.toUpperCase()), prize,
+                GameDTO.modelToDTO(game)
+        );
+        tournament.setEstimatedDuration(tournamentService.getEstimatedDuration(tournament));
 
         Tournament newTournament = tournamentService.addTournament(tournament);
 
-        logger.info("Do you want to add teams to the tournament? (yes/no)");
-        String addTeam = System.console().readLine();
-        if (addTeam.equals("yes")) {
-            logger.info("Adding teams to the tournament");
-            while (addTeam.equals("yes")) {
-                List<Team> teams = teamService.getAllTeams();
-                for (int i = 0; i < teams.size(); i++) {
-                    System.out.println(i + 1 + ". " + teams.get(i).getName());
-                }
-                Integer teamIndex = Integer.parseInt(System.console().readLine("Enter the index of the team: "));
-                Team team = null;
-                if (teamIndex < 0 || teamIndex >= teams.size()) {
-                    logger.error("Invalid team index");
-                } else if (String.valueOf(teamIndex).isEmpty()) {
-                    logger.error("Team index cannot be empty");
-                } else {
-                    team = teams.get(teamIndex - 1);
-                    logger.info("Successfully selected the team");
-                }
-                tournamentService.attachTeam(newTournament.getId(), team.getId());
-                addTeam = System.console().readLine("Do you want to add more teams to the tournament? (yes/no)");
+        System.out.print("Do you want to add teams to the tournament? (yes/no): ");
+        String addTeam = scanner.next();
+        scanner.nextLine();
+
+        while ("yes".equalsIgnoreCase(addTeam)) {
+            List<Team> teams = teamService.getAllTeams();
+            for (int i = 0; i < teams.size(); i++) {
+                System.out.println((i + 1) + ". " + teams.get(i).getName());
             }
+            System.out.print("Enter the index of the team: ");
+            int teamIndex = scanner.nextInt();
+            Team team = null;
+            if (teamIndex > 0 && teamIndex <= teams.size()) {
+                team = teams.get(teamIndex - 1);
+                tournamentService.attachTeam(newTournament.getId(), team.getId());
+                logger.info("Successfully attached team");
+            } else {
+                logger.error("Invalid team index");
+            }
+            System.out.print("Do you want to add more teams to the tournament? (yes/no): ");
+            addTeam = scanner.next();
+            scanner.nextLine();
         }
 
         if (newTournament == null) {
@@ -132,120 +157,72 @@ public class TournamentController {
     public TournamentDTO updateTournament() throws SQLException {
         logger.info("Updating a tournament");
 
-        String id = System.console().readLine("Enter the id of the tournament: ");
-        while (InputValidation.handleUUID(id)) {
-            id = System.console().readLine("Invalid id. Enter the id of the tournament: ");
-        }
+        Scanner scanner = new Scanner(System.in);
 
-        Tournament tournamentEntity = tournamentService.getTournament(java.util.UUID.fromString(id));
-
-        String title = System.console().readLine("Enter the title of the tournament: ");
-        if (title.isEmpty()) {
-            title = tournamentEntity.getTitle();
-        } else {
-            while (InputValidation.handleString(title)) {
-                title = System.console().readLine("Enter the title of the tournament: ");
+        System.out.print("Enter the ID of the tournament: ");
+        Long id = null;
+        while (true) {
+            try {
+                id = Long.parseLong(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid ID format. Enter a valid numeric ID: ");
             }
         }
 
-        String startDate = System.console().readLine("Enter the start date of the tournament: ");
-        if (startDate.isEmpty()) {
-            startDate = tournamentEntity.getStartDate().toString();
-        } else {
-            while (InputValidation.handleDate(startDate)) {
-                startDate = System.console().readLine("Enter the start date of the tournament: ");
-            }
+        Tournament tournamentEntity = tournamentService.getTournament(id);
+        if (tournamentEntity == null) {
+            logger.error("Tournament not found");
+            return null;
         }
 
-        String endDate = System.console().readLine("Enter the end date of the tournament: ");
-        if (endDate.isEmpty()) {
-            endDate = tournamentEntity.getEndDate().toString();
-        } else {
-            while (InputValidation.handleDate(endDate)) {
-                endDate = System.console().readLine("Enter the end date of the tournament: ");
-            }
-        }
+        System.out.print("Enter the title of the tournament (leave empty to keep current): ");
+        String title = scanner.nextLine();
+        title = title.isEmpty() ? tournamentEntity.getTitle() : title;
 
-        Integer spectators = Integer.parseInt(System.console().readLine("Enter the number of spectators: "));
-        if (String.valueOf(spectators).isEmpty()) {
-            spectators = tournamentEntity.getSpectators();
-        } else {
-            while (InputValidation.handleNumber(spectators)) {
-                spectators = Integer.parseInt(System.console().readLine("Enter the number of spectators: "));
-            }
-        }
+        System.out.print("Enter the start date of the tournament (YYYY-MM-DD) or leave empty to keep current: ");
+        String startDateInput = scanner.nextLine();
+        Date startDate = parseDateInput(startDateInput, tournamentEntity.getStartDate());
 
-        Integer breakDuration = Integer.parseInt(System.console().readLine("Enter the break duration: "));
-        if (String.valueOf(breakDuration).isEmpty()) {
-            breakDuration = tournamentEntity.getBreakDuration();
-        } else {
-            while (InputValidation.handleNumber(breakDuration)) {
-                breakDuration = Integer.parseInt(System.console().readLine("Enter the break duration: "));
-            }
-        }
+        System.out.print("Enter the end date of the tournament (YYYY-MM-DD) or leave empty to keep current: ");
+        String endDateInput = scanner.nextLine();
+        Date endDate = parseDateInput(endDateInput, tournamentEntity.getEndDate());
 
-        Integer ceremonyDuration = Integer.parseInt(System.console().readLine("Enter the ceremony duration: "));
-        if (String.valueOf(ceremonyDuration).isEmpty()) {
-            ceremonyDuration = tournamentEntity.getCeremonyDuration();
-        } else {
-            while (InputValidation.handleNumber(ceremonyDuration)) {
-                ceremonyDuration = Integer.parseInt(System.console().readLine("Enter the ceremony duration: "));
-            }
-        }
+        System.out.print("Enter the number of spectators (leave empty to keep current): ");
+        Integer spectators = parseIntegerInput(scanner, tournamentEntity.getSpectators());
 
-        String status = System.console().readLine("Enter the status of the tournament (scheduled - ongoing - finished - cancelled): ");
-        if (status.isEmpty()) {
-            status = tournamentEntity.getStatus().toString();
-        } else {
-            while (InputValidation.handleString(status)) {
-                status = System.console().readLine("Enter the status of the tournament (scheduled - ongoing - finished - cancelled): ");
-            }
-        }
+        System.out.print("Enter the break duration in minutes (leave empty to keep current): ");
+        Integer breakDuration = parseIntegerInput(scanner, tournamentEntity.getBreakDuration());
 
-        if (status.equals("finished")) {
-            List<Team> teams = tournamentEntity.getTeams();
-            System.out.println("Enter Team's ranking");
-            for (Team team : teams) {
-                System.out.println(team.getName());
-                Integer ranking = Integer.parseInt(System.console().readLine("Enter the ranking of the team: "));
-                while (InputValidation.handleNumber(ranking)) {
-                    ranking = Integer.parseInt(System.console().readLine("Enter the ranking of the team: "));
-                }
-                team.setRanking(ranking);
-                teamService.updateTeam(TeamDTO.modelToDTO(team));
-            }
-        }
+        System.out.print("Enter the ceremony duration in minutes (leave empty to keep current): ");
+        Integer ceremonyDuration = parseIntegerInput(scanner, tournamentEntity.getCeremonyDuration());
 
-        Double prize = Double.parseDouble(System.console().readLine("Enter the prize: "));
-        if (String.valueOf(prize).isEmpty()) {
-            prize = tournamentEntity.getPrize();
-        } else {
-            while (InputValidation.handleNumber(prize)) {
-                prize = Double.parseDouble(System.console().readLine("Enter the prize: "));
-            }
-        }
+        System.out.print("Enter the status of the tournament (scheduled, ongoing, finished, cancelled) or leave empty to keep current: ");
+        String status = scanner.nextLine();
+        status = status.isEmpty() ? tournamentEntity.getStatus().toString() : status;
 
-        List<Game> games = gameService.getAllGames();
-        for (int i = 0; i < games.size(); i++) {
-            System.out.println(i + 1 + ". " + games.get(i).getName());
-        }
-        Integer gameIndex = Integer.parseInt(System.console().readLine("Enter the index of the game: "));
-        Game game = tournamentEntity.getGame();
-        if (gameIndex < 0 || gameIndex >= games.size()) {
-            logger.error("Invalid game index");
-        } else if (String.valueOf(gameIndex).isEmpty()) {
-            logger.error("Game index cannot be empty");
-        } else {
-            game = games.get(gameIndex - 1);
-            logger.info("Successfully selected the game");
-        }
 
-        TournamentDTO tournament = new TournamentDTO(title, Date.valueOf(startDate), Date.valueOf(endDate), spectators,0, breakDuration, ceremonyDuration, TournamentStatus.valueOf(status), prize, GameDTO.modelToDTO(game));
+        System.out.print("Enter the prize amount (leave empty to keep current): ");
+        Double prize = parseDoubleInput(scanner, tournamentEntity.getPrize());
+
+        TournamentDTO tournament = new TournamentDTO(
+                id,
+                title,
+                startDate,
+                endDate,
+                spectators,
+                0,
+                breakDuration,
+                ceremonyDuration,
+                TournamentStatus.valueOf(status.toUpperCase()),
+                prize,
+                GameDTO.modelToDTO(tournamentEntity.getGame())
+        );
+
         Integer estimatedDuration = tournamentService.getEstimatedDuration(tournament);
         tournament.setEstimatedDuration(estimatedDuration);
 
         Tournament updatedTournament = tournamentService.updateTournament(tournament);
-
         if (updatedTournament == null) {
             logger.error("Failed to update the tournament");
             return null;
@@ -255,15 +232,57 @@ public class TournamentController {
         }
     }
 
+    private static Date parseDateInput(String input, Date currentValue) {
+        if (input.isEmpty()) {
+            return currentValue;
+        }
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat.setLenient(false);
+            return new Date(dateFormat.parse(input).getTime());
+        } catch (ParseException e) {
+            System.out.println("Invalid date format. Keeping current date.");
+            return currentValue;
+        }
+    }
+
+    private Integer parseIntegerInput(Scanner scanner, Integer currentValue) {
+        String input = scanner.nextLine();
+        if (input.isEmpty()) {
+            return currentValue;
+        }
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Keeping current value.");
+            return currentValue;
+        }
+    }
+
+    private Double parseDoubleInput(Scanner scanner, Double currentValue) {
+        String input = scanner.nextLine();
+        if (input.isEmpty()) {
+            return currentValue;
+        }
+        try {
+            return Double.parseDouble(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Keeping current value.");
+            return currentValue;
+        }
+    }
+
     public TournamentDTO getTournament() throws SQLException {
         logger.info("Getting a tournament");
 
-        String id = System.console().readLine("Enter the id of the tournament: ");
-        while (InputValidation.handleUUID(id)) {
-            id = System.console().readLine("Invalid id. Enter the id of the tournament: ");
+        System.out.print("Enter the id of the tournament: ");
+        Long id = scanner.nextLong();
+        while (!InputValidation.handleLong(id)) {
+            System.out.print("Invalid id. Enter the id of the tournament: ");
+            id = scanner.nextLong();
         }
-
-        Tournament tournament = tournamentService.getTournament(java.util.UUID.fromString(id));
+        scanner.nextLine();
+        Tournament tournament = tournamentService.getTournament(id);
 
         if (tournament == null) {
             logger.error("Failed to get the tournament");
@@ -274,31 +293,29 @@ public class TournamentController {
         }
     }
 
-    public List<TournamentDTO> getAllTournaments() throws SQLException {
+    public void getAllTournaments() throws SQLException {
         logger.info("Getting all tournaments");
 
         List<Tournament> tournaments = tournamentService.getAllTournaments();
 
         if (tournaments == null) {
             logger.error("Failed to get all tournaments");
-            return null;
         } else {
             logger.info("Successfully got all tournaments");
-            return tournaments.stream().map(TournamentDTO::modelToDTO).collect(Collectors.toList());
+            tournaments.stream().map(TournamentDTO::modelToDTO).collect(Collectors.toList()).forEach(System.out::println);
         }
     }
 
-    public List<TournamentDTO> getUpcomingTournaments() throws SQLException {
-        logger.info("Getting all upcoming tournaments");
+    public void getUpcomingTournaments() throws SQLException {
+        logger.info("Getting upcoming tournaments");
 
         List<Tournament> tournaments = tournamentService.getUpcomingTournaments();
 
         if (tournaments == null) {
-            logger.error("Failed to get all upcoming tournaments");
-            return null;
+            logger.error("Failed to get upcoming tournaments");
         } else {
-            logger.info("Successfully got all upcoming tournaments");
-            return tournaments.stream().map(TournamentDTO::modelToDTO).collect(Collectors.toList());
+            logger.info("Successfully got upcoming tournaments");
+            tournaments.stream().map(TournamentDTO::modelToDTO).collect(Collectors.toList()).forEach(System.out::println);
         }
     }
 }

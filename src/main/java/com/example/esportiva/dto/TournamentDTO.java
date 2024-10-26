@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class TournamentDTO {
-    private UUID id;
+    private Long id;
     private String title;
     private Date startDate;
     private Date endDate;
@@ -23,7 +23,6 @@ public class TournamentDTO {
     }
 
     public TournamentDTO(String title, Date startDate, Date endDate, Integer spectators, Integer estimatedDuration, Integer breakDuration, Integer ceremonyDuration, TournamentStatus status, double prize, GameDTO game) {
-        this.id = UUID.randomUUID();
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -36,7 +35,7 @@ public class TournamentDTO {
         this.game = game;
     }
 
-    public TournamentDTO(UUID id, String title, Date startDate, Date endDate, Integer spectators, Integer estimatedDuration, Integer breakDuration, Integer ceremonyDuration, TournamentStatus status, double prize, GameDTO game) {
+    public TournamentDTO(Long id, String title, Date startDate, Date endDate, Integer spectators, Integer estimatedDuration, Integer breakDuration, Integer ceremonyDuration, TournamentStatus status, double prize, GameDTO game) {
         this.id = id;
         this.title = title;
         this.startDate = startDate;
@@ -50,10 +49,10 @@ public class TournamentDTO {
         this.game = game;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -145,7 +144,7 @@ public class TournamentDTO {
     }
 
     public Tournament dtoToModel(){
-        return new Tournament(this.id, this.title, this.startDate, this.endDate, this.spectators, this.estimatedDuration, this.breakDuration, this.ceremonyDuration, this.status, this.prize, this.game.dtoToModel());
+        return new Tournament(this.id, this.title, (java.sql.Date) this.startDate, (java.sql.Date) this.endDate, this.spectators, this.estimatedDuration, this.breakDuration, this.ceremonyDuration, this.status, this.prize, this.game.dtoToModel());
     }
 
     public static TournamentDTO modelToDTO(Tournament tournament){

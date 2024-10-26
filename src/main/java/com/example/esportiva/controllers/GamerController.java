@@ -11,18 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.Scanner;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GamerController {
     private final GamerService gamerService;
     private final TeamService teamService;
-    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(GamerController.class);
+    private final Scanner scanner = new Scanner(System.in);
 
     public GamerController(GamerService gamerService, TeamService teamService) {
         this.gamerService = gamerService;
@@ -32,124 +29,174 @@ public class GamerController {
     public GamerDTO addGamer() throws SQLException {
         logger.info("Adding a gamer");
 
-        String username = System.console().readLine("Enter the username: ");
-        while (InputValidation.handleString(username)) {
-            username = System.console().readLine("Enter the username: ");
+        System.out.print("Enter the username: ");
+        String username = scanner.nextLine();
+        while (!InputValidation.handleString(username)) {
+            System.out.print("Invalid input. Enter the username: ");
+            username = scanner.nextLine();
         }
 
-        Integer age = Integer.parseInt(System.console().readLine("Enter the age: "));
-        while (InputValidation.handleAge(age)) {
-            age = Integer.parseInt(System.console().readLine("Enter the age: "));
+        System.out.print("Enter the age: ");
+        int age = scanner.nextInt();
+        scanner.nextLine();
+        while (!InputValidation.handleAge(age)) {
+            System.out.print("Invalid age. Enter the age (10-99): ");
+            age = scanner.nextInt();
+            scanner.nextLine();
         }
 
-        logger.info("Select the team for the gamer");
         List<Team> teams = teamService.getAllTeams();
-        for (int i = 0; i < teams.size(); i++) {
-            System.out.println("Team " + i + ": " + teams.get(i).getName());
-        }
-        Integer teamIndex = Integer.parseInt(System.console().readLine("Pick a Team: "));
-        if (teamIndex < 0 || teamIndex >= teams.size()) {
-            logger.error("Invalid team index");
-        }
-        TeamDTO team;
-        if (String.valueOf(teamIndex).isEmpty()) {
-            team = null;
-        }else {
-            Team selectedTeam = teams.get(teamIndex-1);
-            team = new TeamDTO(selectedTeam.getId(), selectedTeam.getName(), selectedTeam.getRanking());
+        TeamDTO team = null;
+        if (!teams.isEmpty()) {
+            logger.info("Select the team for the gamer");
+
+            for (int i = 0; i < teams.size(); i++) {
+                System.out.println("Team " + (i + 1) + ": " + teams.get(i).getName());
+            }
+            System.out.print("Pick a team (1 to " + teams.size() + "): ");
+            int teamIndex = scanner.nextInt();
+            scanner.nextLine(); // Clear the newline character
+
+            if (teamIndex > 0 && teamIndex <= teams.size()) {
+                Team selectedTeam = teams.get(teamIndex - 1);
+                team = new TeamDTO(selectedTeam.getId(), selectedTeam.getName(), selectedTeam.getRanking());
+            } else {
+                logger.error("Invalid team index");
+            }
         }
 
-        Gamer gamer = gamerService.addGamer(new GamerDTO(username, age, team));
+        Gamer gamer = null;
+
+        if (team == null) {
+            gamer = gamerService.addGamer(new GamerDTO(username, age));
+        } else {
+            gamer = gamerService.addGamer(new GamerDTO(username, age, team));
+        }
 
         if (gamer == null) {
             logger.error("Failed to add gamer");
             return null;
-        }else {
+        } else {
             logger.info("Gamer added successfully");
             return GamerDTO.modelToDTO(gamer);
         }
     }
 
-    public GamerDTO updateGamer() throws SQLException{
+    public GamerDTO updateGamer() throws SQLException {
         logger.info("Updating a gamer");
 
-        String id = System.console().readLine("Enter the id of the gamer: ");
-        while (InputValidation.handleUUID(id)) {
-            id = System.console().readLine("Enter the id of the gamer: ");
-        }
+        System.out.print("Enter the ID of the gamer: ");
+        long id = scanner.nextLong();
+        scanner.nextLine();
 
-        Gamer gamerEntity = gamerService.getGamer(UUID.fromString(id));
+        Gamer gamerEntity = gamerService.getGamer(id);
 
-        String username = System.console().readLine("Enter the username: ");
-        if (username.isEmpty()){
+        System.out.print("Enter the username (leave blank to keep current): ");
+        String username = scanner.nextLine();
+        if (username.isEmpty()) {
             username = gamerEntity.getUsername();
-        }else {
-            while (InputValidation.handleString(username)) {
-                username = System.console().readLine("Enter the username: ");
+        } else {
+            while (!InputValidation.handleString(username)) {
+                System.out.print("Invalid input. Enter the username: ");
+                username = scanner.nextLine();
             }
         }
 
-        Integer age = Integer.parseInt(System.console().readLine("Enter the age: "));
-        if (String.valueOf(age).isEmpty()) {
+        System.out.print("Enter the age (leave blank to keep current): ");
+        String ageInput = scanner.nextLine();
+        int age;
+        if (ageInput.isEmpty()) {
             age = gamerEntity.getAge();
-        }else {
-            while (InputValidation.handleAge(age)) {
-                age = Integer.parseInt(System.console().readLine("Enter the age: "));
+        } else {
+            age = Integer.parseInt(ageInput);
+            while (!InputValidation.handleAge(age)) {
+                System.out.print("Invalid age. Enter the age (10-99): ");
+                age = scanner.nextInt();
+                scanner.nextLine();
             }
         }
 
-        logger.info("Select the team for the gamer");
+
         List<Team> teams = teamService.getAllTeams();
-        for (int i = 0; i < teams.size(); i++) {
-            System.out.println("Team " + i + ": " + teams.get(i).getName());
-        }
-        Integer teamIndex = Integer.parseInt(System.console().readLine("Pick a Team: "));
-        if (teamIndex < 0 || teamIndex >= teams.size()) {
-            logger.error("Invalid team index");
-        }
-        TeamDTO team;
-        if (String.valueOf(teamIndex).isEmpty()) {
-            team = TeamDTO.modelToDTO(gamerEntity.getTeam());
-        }else {
-            Team selectedTeam = teams.get(teamIndex-1);
-            team = new TeamDTO(selectedTeam.getId(), selectedTeam.getName(), selectedTeam.getRanking());
+        TeamDTO team = null;
+        if (!teams.isEmpty()){
+            logger.info("Select the team for the gamer");
+            for (int i = 0; i < teams.size(); i++) {
+                System.out.println("Team " + (i + 1) + ": " + teams.get(i).getName());
+            }
+            System.out.print("Pick a team (1 to " + teams.size() + ") or leave blank to keep current: ");
+            String teamInput = scanner.nextLine();
+
+            if (teamInput.isEmpty()) {
+                team = TeamDTO.modelToDTO(gamerEntity.getTeam());
+            } else {
+                int teamIndex = Integer.parseInt(teamInput);
+                if (teamIndex > 0 && teamIndex <= teams.size()) {
+                    Team selectedTeam = teams.get(teamIndex - 1);
+                    team = new TeamDTO(selectedTeam.getId(), selectedTeam.getName(), selectedTeam.getRanking());
+                } else {
+                    logger.error("Invalid team index");
+                    return null;
+                }
+            }
         }
 
-        Gamer gamer = gamerService.updateGamer(new GamerDTO(UUID.fromString(id), username, age, team));
+        Gamer gamer = null;
+        if (team == null) {
+           gamer = gamerService.updateGamer(new GamerDTO(id,username, age));
+        }else{
+             gamer = gamerService.updateGamer(new GamerDTO(id, username, age, team));
+        }
 
         if (gamer == null) {
             logger.error("Failed to update gamer");
             return null;
-        }else {
+        } else {
             logger.info("Gamer updated successfully");
             return GamerDTO.modelToDTO(gamer);
         }
     }
 
-    public void deleteGamer(){
+    public void deleteGamer() {
         logger.info("Deleting a gamer");
 
-        String id = System.console().readLine("Enter the id of the gamer: ");
-        while (InputValidation.handleUUID(id)) {
-            id = System.console().readLine("Enter the id of the gamer: ");
-        }
+        System.out.print("Enter the ID of the gamer: ");
+        long id = scanner.nextLong();
+        scanner.nextLine(); // Clear the newline character
 
-        if (gamerService.deleteGamer(UUID.fromString(id))) {
+        if (gamerService.deleteGamer(id)) {
             logger.info("Gamer deleted successfully");
-        }else {
+        } else {
             logger.error("Failed to delete gamer");
         }
     }
 
-    public List<GamerDTO> getAllUsers(){
+    public void getAllGamers() {
         List<Gamer> gamers = gamerService.getAllGamers();
 
         if (gamers.isEmpty()) {
             logger.error("No gamers found");
+        } else {
+            logger.info("All gamers retrieved");
+            gamers.stream().map(GamerDTO::modelToDTO).collect(Collectors.toList()).forEach(System.out::println);
+        }
+    }
+
+    public GamerDTO getGamer() throws SQLException {
+        logger.info("Getting a gamer");
+
+        System.out.print("Enter the ID of the gamer: ");
+        long id = scanner.nextLong();
+        scanner.nextLine();
+
+        Gamer gamer = gamerService.getGamer(id);
+
+        if (gamer == null) {
+            logger.error("Failed to get the gamer");
             return null;
-        }else {
-            logger.info("All gamers");
-            return gamers.stream().map(GamerDTO::modelToDTO).collect(Collectors.toList());
+        } else {
+            logger.info("Successfully got the gamer");
+            return GamerDTO.modelToDTO(gamer);
         }
     }
 }

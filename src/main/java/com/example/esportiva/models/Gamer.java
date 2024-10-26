@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Gamer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -24,28 +24,27 @@ public class Gamer {
     }
 
     public Gamer(String username, int age) {
-        this.id = UUID.randomUUID();
         this.username = username;
         this.age = age;
     }
 
-    public Gamer(UUID id, String username, int age) {
+    public Gamer(Long id, String username, int age) {
         this.id = id;
         this.username = username;
         this.age = age;
     }
 
-    public Gamer(UUID id, String username, int age, Team team) {
+    public Gamer(Long id, String username, int age, Team team) {
         this.id = id;
         this.username = username;
         this.age = age;
         this.team = team;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

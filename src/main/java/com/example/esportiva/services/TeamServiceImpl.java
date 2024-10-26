@@ -37,7 +37,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team getTeam(UUID id) throws SQLException {
+    public Team getTeam(Long id) throws SQLException {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null");
         }else {
@@ -51,7 +51,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team attachGamer(UUID teamId, UUID playerId) throws SQLException {
+    public Team attachGamer(Long teamId, Long playerId) throws SQLException {
         if (teamId == null) {
             throw new IllegalArgumentException("Team Id cannot be null");
         }else if (playerId == null) {
@@ -62,7 +62,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team detachGamer(UUID teamId, UUID playerId) throws SQLException {
+    public Team detachGamer(Long teamId, Long playerId) throws SQLException {
         if (teamId == null) {
             throw new IllegalArgumentException("Team Id cannot be null");
         }else if (playerId == null) {
@@ -73,7 +73,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team attachTournament(UUID teamId, UUID tournamentId) throws SQLException {
+    public Team attachTournament(Long teamId, Long tournamentId) throws SQLException {
         if (teamId == null) {
             throw new IllegalArgumentException("Team Id cannot be null");
         }else if (tournamentId == null) {
@@ -84,7 +84,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team detachTournament(UUID teamId, UUID tournamentId) throws SQLException {
+    public Team detachTournament(Long teamId, Long tournamentId) throws SQLException {
         if (teamId == null) {
             throw new IllegalArgumentException("Team Id cannot be null");
         }else if (tournamentId == null) {

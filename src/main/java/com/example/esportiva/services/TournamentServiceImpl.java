@@ -39,7 +39,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public Tournament getTournament(UUID id) throws SQLException {
+    public Tournament getTournament(Long id) throws SQLException {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null");
         }else {
@@ -48,7 +48,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public Tournament attachTeam(UUID tournamentId, UUID teamId) throws SQLException {
+    public Tournament attachTeam(Long tournamentId, Long teamId) throws SQLException {
         if (tournamentId == null) {
             throw new IllegalArgumentException("Tournament Id cannot be null");
         }else if (teamId == null) {
@@ -59,7 +59,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public Tournament detachTeam(UUID tournamentId, UUID teamId) throws SQLException {
+    public Tournament detachTeam(Long tournamentId, Long teamId) throws SQLException {
         if (tournamentId == null) {
             throw new IllegalArgumentException("Tournament Id cannot be null");
         }else if (teamId == null) {
@@ -70,7 +70,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public Tournament attachGame(UUID tournamentId, UUID gameId) throws SQLException {
+    public Tournament attachGame(Long tournamentId, Long gameId) throws SQLException {
         if (tournamentId == null) {
             throw new IllegalArgumentException("Tournament Id cannot be null");
         }else if (gameId == null) {
@@ -81,7 +81,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public Tournament detachGame(UUID tournamentId, UUID gameId) throws SQLException {
+    public Tournament detachGame(Long tournamentId, Long gameId) throws SQLException {
         if (tournamentId == null) {
             throw new IllegalArgumentException("Tournament Id cannot be null");
         }else if (gameId == null) {

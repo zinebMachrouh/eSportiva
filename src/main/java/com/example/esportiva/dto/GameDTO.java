@@ -6,7 +6,7 @@ import com.example.esportiva.models.enums.GameDifficulty;
 import java.util.UUID;
 
 public class GameDTO {
-    private UUID id;
+    private Long id;
     private String name;
     private GameDifficulty difficulty;
     private Integer matchDuration;
@@ -14,7 +14,7 @@ public class GameDTO {
     public GameDTO() {
     }
 
-    public GameDTO(UUID id, String name, GameDifficulty difficulty, Integer matchDuration) {
+    public GameDTO(Long id, String name, GameDifficulty difficulty, Integer matchDuration) {
         this.id = id;
         this.name = name;
         this.difficulty = difficulty;
@@ -27,10 +27,10 @@ public class GameDTO {
         this.matchDuration = matchDuration;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,7 +57,7 @@ public class GameDTO {
 
     @Override
     public String toString() {
-        return "GameDTO{" +
+        return "Game{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", difficulty=" + difficulty +

@@ -50,4 +50,8 @@ public class InputValidation {
             return false;
         }
     }
+
+    public static boolean handleLong(long input) {
+        return input > 0;
+    }
 }

@@ -49,7 +49,13 @@ public class GamerRepositoryImpl implements GamerRepository {
             transaction = entityManager.getTransaction();
             transaction.begin();
 
-            Gamer managedGamer = entityManager.merge(gamer);  // Merge to update existing gamer
+            Gamer existingGamer = entityManager.find(Gamer.class, gamer.getId());
+            if (existingGamer == null) {
+                System.out.println("Gamer with ID " + gamer.getId() + " does not exist.");
+                return null;
+            }
+
+            Gamer managedGamer = entityManager.merge(gamer);
 
             transaction.commit();
             return managedGamer;
@@ -64,8 +70,9 @@ public class GamerRepositoryImpl implements GamerRepository {
         }
     }
 
+
     @Override
-    public boolean deleteGamer(UUID id) {
+    public boolean deleteGamer(Long id) {
         EntityTransaction transaction = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
@@ -93,7 +100,7 @@ public class GamerRepositoryImpl implements GamerRepository {
     }
 
     @Override
-    public Gamer getGamer(UUID id) {
+    public Gamer getGamer(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             return entityManager.find(Gamer.class, id);  // Find the gamer by id

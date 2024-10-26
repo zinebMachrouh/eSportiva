@@ -36,6 +36,9 @@
         <constructor-arg ref="entityManagerFactory" />
     </bean>
 
+    <bean id="tournamentDAOImpl" class="com.example.esportiva.dao.TournamentDAOImpl" />
+    <bean id="tournamentDAOExtension" class="com.example.esportiva.dao.TournamentDAOExtension" />
+
     <bean id="gameService" class="com.example.esportiva.services.GameServiceImpl" >
         <constructor-arg ref="gameRepository" />
     </bean>
@@ -47,6 +50,25 @@
     </bean>
     <bean id="tournamentService" class="com.example.esportiva.services.TournamentServiceImpl" >
         <constructor-arg ref="tournamentRepository" />
+        <constructor-arg ref="tournamentDAOExtension" />
+    </bean>
+
+    <bean id="gameController" class="com.example.esportiva.controllers.GameController" >
+        <constructor-arg ref="gameService" />
+    </bean>
+    <bean id="teamController" class="com.example.esportiva.controllers.TeamController" >
+        <constructor-arg ref="teamService" />
+        <constructor-arg ref="tournamentService" />
+        <constructor-arg ref="gamerService" />
+    </bean>
+    <bean id="gamerController" class="com.example.esportiva.controllers.GamerController" >
+        <constructor-arg ref="gamerService" />
+        <constructor-arg ref="teamService" />
+    </bean>
+    <bean id="tournamentController" class="com.example.esportiva.controllers.TournamentController" >
+        <constructor-arg ref="tournamentService" />
+        <constructor-arg ref="gameService" />
+        <constructor-arg ref="teamService" />
     </bean>
 
 </beans>

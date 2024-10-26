@@ -8,11 +8,11 @@ import java.util.UUID;
 public interface TournamentRepository {
     public Tournament addTournament(Tournament tournament);
     public Tournament updateTournament(Tournament tournament);
-    public Tournament getTournament(UUID id);
-    public Tournament attachTeam(UUID tournamentId, UUID teamId);
-    public Tournament detachTeam(UUID tournamentId, UUID teamId);
-    public Tournament attachGame(UUID tournamentId, UUID gameId);
-    public Tournament detachGame(UUID tournamentId, UUID gameId);
+    public Tournament getTournament(Long id);
+    public Tournament attachTeam(Long tournamentId, Long teamId);
+    public Tournament detachTeam(Long tournamentId, Long teamId);
+    public Tournament attachGame(Long tournamentId, Long gameId);
+    public Tournament detachGame(Long tournamentId, Long gameId);
     public List<Tournament> getAllTournaments();
     public List<Tournament> getUpcomingTournaments();
 }

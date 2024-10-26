@@ -35,7 +35,7 @@ public class GamerServiceImpl implements GamerService {
     }
 
     @Override
-    public boolean deleteGamer(UUID id) {
+    public boolean deleteGamer(Long id) {
         if (id == null) {
             return false;
         }else {
@@ -44,7 +44,7 @@ public class GamerServiceImpl implements GamerService {
     }
 
     @Override
-    public Gamer getGamer(UUID id) {
+    public Gamer getGamer(Long id) {
         if (id == null) {
             return null;
         }else {

@@ -63,7 +63,7 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Game getGame(UUID id) {
+    public Game getGame(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             return entityManager.find(Game.class, id);

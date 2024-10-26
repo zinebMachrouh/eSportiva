@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -35,21 +35,20 @@ public class Team {
     }
 
     public Team(String name, int ranking) {
-        this.id = UUID.randomUUID();
         this.name = name;
         this.ranking = ranking;
     }
 
-    public Team(UUID id, String name, int ranking) {
+    public Team(Long id, String name, int ranking) {
         this.id = id;
         this.name = name;
         this.ranking = ranking;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -72,6 +71,10 @@ public class Team {
     }
     public void setTournaments(List<Tournament> tournaments) {
         this.tournaments = tournaments;
+    }
+
+    public List<Gamer> getGamers() {
+        return gamers;
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.example.esportiva.models.Team;
 import java.util.UUID;
 
 public class TeamDTO {
-    private UUID id;
+    private Long id;
     private String name;
     private Integer ranking;
 
@@ -13,21 +13,20 @@ public class TeamDTO {
     }
 
     public TeamDTO(String name, int ranking) {
-        this.id = UUID.randomUUID();
         this.name = name;
         this.ranking = ranking;
     }
 
-    public TeamDTO(UUID id, String name, int ranking) {
+    public TeamDTO(Long id, String name, int ranking) {
         this.id = id;
         this.name = name;
         this.ranking = ranking;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
