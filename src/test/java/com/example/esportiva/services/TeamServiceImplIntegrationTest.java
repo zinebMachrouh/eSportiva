@@ -1,8 +1,10 @@
 package com.example.esportiva.services;
 
 import com.example.esportiva.dto.TeamDTO;
+import com.example.esportiva.models.Game;
 import com.example.esportiva.models.Team;
 import com.example.esportiva.models.Tournament;
+import com.example.esportiva.models.enums.GameDifficulty;
 import com.example.esportiva.models.enums.TournamentStatus;
 import com.example.esportiva.repositories.interfaces.TeamRepository;
 import com.example.esportiva.repositories.interfaces.TournamentRepository;
@@ -41,13 +43,15 @@ class TeamServiceImplIntegrationTest {
         entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
 
-        teamRepository = new TeamRepositoryImpl((EntityManagerFactory) entityManager);
-        tournamentRepository = new TournamentRepositoryImpl((EntityManagerFactory) entityManager);
+        // Use the EntityManagerFactory directly
+        teamRepository = new TeamRepositoryImpl(entityManagerFactory);
+        tournamentRepository = new TournamentRepositoryImpl(entityManagerFactory);
         teamService = new TeamServiceImpl(teamRepository, tournamentRepository);
 
         team = new Team("Test Team", 1);
+        Game game = new Game("FIFA 22", GameDifficulty.HARD, 5);
         tournament = new Tournament("Championship", Date.valueOf("2024-10-20"), Date.valueOf("2024-10-22"),
-                1000, 180, 30, 15, TournamentStatus.SCHEDULED, 50000, null);
+                1000, 180, 30, 15, TournamentStatus.SCHEDULED, 50000, game);
 
         teamRepository.addTeam(team);
         tournamentRepository.addTournament(tournament);
