@@ -3,17 +3,16 @@ package com.example.esportiva.services;
 import com.example.esportiva.dto.TeamDTO;
 import com.example.esportiva.models.Team;
 import com.example.esportiva.repositories.interfaces.TeamRepository;
+import com.example.esportiva.repositories.interfaces.TournamentRepository;
 import com.example.esportiva.services.interfaces.TeamService;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
 
-    public TeamServiceImpl(TeamRepository teamRepository) {
+    public TeamServiceImpl(TeamRepository teamRepository, TournamentRepository tournamentRepository) {
         this.teamRepository = teamRepository;
     }
 

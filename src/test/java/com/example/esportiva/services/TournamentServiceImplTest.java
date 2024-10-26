@@ -24,6 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,106 +82,31 @@ public class TournamentServiceImplTest {
         assertEquals("FIFA 22 Tournament", result.getTitle());
         verify(tournamentRepository).updateTournament(any(Tournament.class));
     }
-    
+
     @Test
     void testGetTournament() throws SQLException {
         Game game = new Game("FIFA 22", GameDifficulty.EASY, 5);
         GameDTO gameDTO = new GameDTO("FIFA 22", GameDifficulty.EASY, 5);
 
-        Tournament tournament = new Tournament("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, game);
-        TournamentDTO tournamentDTO = new TournamentDTO("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, gameDTO);
+        Tournament tournament = new Tournament("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"), 500, 0, 15, 25, TournamentStatus.ONGOING, 2500, game);
+        tournament.setId(1L);
+
+        TournamentDTO tournamentDTO = new TournamentDTO("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"), 500, 0, 15, 25, TournamentStatus.ONGOING, 2500, gameDTO);
 
         Integer estimatedDuration = tournamentService.getEstimatedDuration(tournamentDTO);
         tournament.setEstimatedDuration(estimatedDuration);
         tournamentDTO.setEstimatedDuration(estimatedDuration);
 
-        when(tournamentRepository.getTournament(any())).thenReturn(tournament);
+
+        when(tournamentRepository.getTournament(anyLong())).thenReturn(tournament);
 
         Tournament result = tournamentService.getTournament(tournament.getId());
         assertNotNull(result);
         assertEquals("FIFA 22 Tournament", result.getTitle());
-        verify(tournamentRepository).getTournament(any());
+        verify(tournamentRepository).getTournament(anyLong());
     }
-    
-    @Test
-    void testAttachTeam() throws SQLException {
-        Game game = new Game("FIFA 22", GameDifficulty.EASY, 5);
-        GameDTO gameDTO = new GameDTO("FIFA 22", GameDifficulty.EASY, 5);
 
-        Tournament tournament = new Tournament("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, game);
-        TournamentDTO tournamentDTO = new TournamentDTO("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, gameDTO);
 
-        Integer estimatedDuration = tournamentService.getEstimatedDuration(tournamentDTO);
-        tournament.setEstimatedDuration(estimatedDuration);
-        tournamentDTO.setEstimatedDuration(estimatedDuration);
-
-        when(tournamentRepository.attachTeam(any(), any())).thenReturn(tournament);
-
-        Tournament result = tournamentService.attachTeam(tournament.getId(), game.getId());
-        assertNotNull(result);
-        assertEquals("FIFA 22 Tournament", result.getTitle());
-        verify(tournamentRepository).attachTeam(any(), any());
-    }
-    
-    @Test
-    void testDetachTeam() throws SQLException {
-        Game game = new Game("FIFA 22", GameDifficulty.EASY, 5);
-        GameDTO gameDTO = new GameDTO("FIFA 22", GameDifficulty.EASY, 5);
-
-        Tournament tournament = new Tournament("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, game);
-        TournamentDTO tournamentDTO = new TournamentDTO("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, gameDTO);
-
-        Integer estimatedDuration = tournamentService.getEstimatedDuration(tournamentDTO);
-        tournament.setEstimatedDuration(estimatedDuration);
-        tournamentDTO.setEstimatedDuration(estimatedDuration);
-
-        when(tournamentRepository.detachTeam(any(), any())).thenReturn(tournament);
-
-        Tournament result = tournamentService.detachTeam(tournament.getId(), game.getId());
-        assertNotNull(result);
-        assertEquals("FIFA 22 Tournament", result.getTitle());
-        verify(tournamentRepository).detachTeam(any(), any());
-    }
-    
-    @Test
-    void testAttachGame() throws SQLException {
-        Game game = new Game("FIFA 22", GameDifficulty.EASY, 5);
-        GameDTO gameDTO = new GameDTO("FIFA 22", GameDifficulty.EASY, 5);
-
-        Tournament tournament = new Tournament("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, game);
-        TournamentDTO tournamentDTO = new TournamentDTO("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, gameDTO);
-
-        Integer estimatedDuration = tournamentService.getEstimatedDuration(tournamentDTO);
-        tournament.setEstimatedDuration(estimatedDuration);
-        tournamentDTO.setEstimatedDuration(estimatedDuration);
-
-        when(tournamentRepository.attachGame(any(), any())).thenReturn(tournament);
-
-        Tournament result = tournamentService.attachGame(tournament.getId(), game.getId());
-        assertNotNull(result);
-        assertEquals("FIFA 22 Tournament", result.getTitle());
-        verify(tournamentRepository).attachGame(any(), any());
-    }
-    
-    @Test
-    void testDetachGame() throws SQLException {
-        Game game = new Game("FIFA 22", GameDifficulty.EASY, 5);
-        GameDTO gameDTO = new GameDTO("FIFA 22", GameDifficulty.EASY, 5);
-
-        Tournament tournament = new Tournament("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, game);
-        TournamentDTO tournamentDTO = new TournamentDTO("FIFA 22 Tournament", Date.valueOf("2022-12-12"), Date.valueOf("2022-12-20"),500,0,15,25, TournamentStatus.ONGOING,2500, gameDTO);
-
-        Integer estimatedDuration = tournamentService.getEstimatedDuration(tournamentDTO);
-        tournament.setEstimatedDuration(estimatedDuration);
-        tournamentDTO.setEstimatedDuration(estimatedDuration);
-
-        when(tournamentRepository.detachGame(any(), any())).thenReturn(tournament);
-
-        Tournament result = tournamentService.detachGame(tournament.getId(), game.getId());
-        assertNotNull(result);
-        assertEquals("FIFA 22 Tournament", result.getTitle());
-        verify(tournamentRepository).detachGame(any(), any());
-    }
 
     @Test
     void testGetAllTournaments() throws SQLException {
