@@ -6,6 +6,7 @@ import com.example.esportiva.repositories.interfaces.GameRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import java.util.List;
 import java.util.UUID;
 
 public class GameRepositoryImpl implements GameRepository {
@@ -74,5 +75,16 @@ public class GameRepositoryImpl implements GameRepository {
         }
     }
 
-
+    @Override
+    public List<Game> getAllGames() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            return entityManager.createQuery("SELECT g FROM Game g", Game.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
 }

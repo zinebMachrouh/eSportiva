@@ -2,6 +2,7 @@ package com.example.esportiva.repositories;
 
 import com.example.esportiva.models.Gamer;
 import com.example.esportiva.models.Team;
+import com.example.esportiva.models.Tournament;
 import com.example.esportiva.repositories.interfaces.TeamRepository;
 
 import javax.persistence.EntityManager;
@@ -130,6 +131,62 @@ public class TeamRepositoryImpl implements TeamRepository {
             Gamer gamer = entityManager.find(Gamer.class, gamerId);
             if (team != null && gamer != null) {
                 team.removeGamer(gamer);
+                entityManager.merge(team);
+            }
+
+            transaction.commit();
+            return team;
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public Team attachTournament(UUID teamId, UUID tournamentId) {
+        EntityTransaction transaction = null;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Team team = entityManager.find(Team.class, teamId);
+            Tournament tournament = entityManager.find(Tournament.class, tournamentId);
+            if (team != null && tournament != null) {
+                team.addTournament(tournament);
+                entityManager.merge(team);
+            }
+
+            transaction.commit();
+            return team;
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
+    public Team detachTournament(UUID teamId, UUID tournamentId) {
+        EntityTransaction transaction = null;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Team team = entityManager.find(Team.class, teamId);
+            Tournament tournament = entityManager.find(Tournament.class, tournamentId);
+            if (team != null && tournament != null) {
+                team.removeTournament(tournament);
                 entityManager.merge(team);
             }
 

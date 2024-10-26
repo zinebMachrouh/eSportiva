@@ -26,4 +26,27 @@
     <bean id="gameRepository" class="com.example.esportiva.repositories.GameRepositoryImpl" >
         <constructor-arg ref="entityManagerFactory" />
     </bean>
+    <bean id="teamRepository" class="com.example.esportiva.repositories.TeamRepositoryImpl" >
+        <constructor-arg ref="entityManagerFactory" />
+    </bean>
+    <bean id="gamerRepository" class="com.example.esportiva.repositories.GamerRepositoryImpl" >
+        <constructor-arg ref="entityManagerFactory" />
+    </bean>
+    <bean id="tournamentRepository" class="com.example.esportiva.repositories.TournamentRepositoryImpl" >
+        <constructor-arg ref="entityManagerFactory" />
+    </bean>
+
+    <bean id="gameService" class="com.example.esportiva.services.GameServiceImpl" >
+        <constructor-arg ref="gameRepository" />
+    </bean>
+    <bean id="teamService" class="com.example.esportiva.services.TeamServiceImpl" >
+        <constructor-arg ref="teamRepository" />
+    </bean>
+    <bean id="gamerService" class="com.example.esportiva.services.GamerServiceImpl" >
+        <constructor-arg ref="gamerRepository" />
+    </bean>
+    <bean id="tournamentService" class="com.example.esportiva.services.TournamentServiceImpl" >
+        <constructor-arg ref="tournamentRepository" />
+    </bean>
+
 </beans>

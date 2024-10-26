@@ -3,10 +3,12 @@ package com.example.esportiva.services;
 import com.example.esportiva.dto.GameDTO;
 import com.example.esportiva.dto.GamerDTO;
 import com.example.esportiva.models.Game;
+import com.example.esportiva.models.Gamer;
 import com.example.esportiva.repositories.interfaces.GameRepository;
 import com.example.esportiva.services.interfaces.GameService;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 public class GameServiceImpl implements GameService {
@@ -41,5 +43,10 @@ public class GameServiceImpl implements GameService {
         }else {
             return gameRepository.getGame(id);
         }
+    }
+
+    @Override
+    public List<Game> getAllGames() throws SQLException {
+        return gameRepository.getAllGames();
     }
 }

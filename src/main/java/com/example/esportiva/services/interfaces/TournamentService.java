@@ -17,4 +17,5 @@ public interface TournamentService {
     public Tournament detachGame(UUID tournamentId, UUID gameId) throws SQLException;
     public List<Tournament> getAllTournaments() throws SQLException;
     public List<Tournament> getUpcomingTournaments() throws SQLException;
+    public Integer getEstimatedDuration(TournamentDTO tournament) throws SQLException;
 }

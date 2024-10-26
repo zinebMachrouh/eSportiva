@@ -2,6 +2,7 @@ package com.example.esportiva.utils;
 
 
 import java.sql.Date;
+import java.util.UUID;
 
 public class InputValidation {
     public static boolean handleString(String input) {
@@ -39,5 +40,14 @@ public class InputValidation {
 
     public static boolean handleTeamRanking(int input) {
         return input >= 0 && input <= 100;
+    }
+
+    public static boolean handleUUID(String input) {
+        try {
+            UUID.fromString(input);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

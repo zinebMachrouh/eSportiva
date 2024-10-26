@@ -148,7 +148,7 @@ public class TournamentDTO {
         return new Tournament(this.id, this.title, this.startDate, this.endDate, this.spectators, this.estimatedDuration, this.breakDuration, this.ceremonyDuration, this.status, this.prize, this.game.dtoToModel());
     }
 
-    public TournamentDTO modelToDTO(Tournament tournament){
+    public static TournamentDTO modelToDTO(Tournament tournament){
         return new TournamentDTO(tournament.getId(), tournament.getTitle(), tournament.getStartDate(), tournament.getEndDate(), tournament.getSpectators(), tournament.getEstimatedDuration(), tournament.getBreakDuration(), tournament.getCeremonyDuration(), tournament.getStatus(), tournament.getPrize(), GameDTO.modelToDTO(tournament.getGame()));
     }
 }

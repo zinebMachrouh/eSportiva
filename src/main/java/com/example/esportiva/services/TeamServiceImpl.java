@@ -71,4 +71,26 @@ public class TeamServiceImpl implements TeamService {
             return teamRepository.detachGamer(teamId, playerId);
         }
     }
+
+    @Override
+    public Team attachTournament(UUID teamId, UUID tournamentId) throws SQLException {
+        if (teamId == null) {
+            throw new IllegalArgumentException("Team Id cannot be null");
+        }else if (tournamentId == null) {
+            throw new IllegalArgumentException("Tournament Id cannot be null");
+        }else {
+            return teamRepository.attachTournament(teamId, tournamentId);
+        }
+    }
+
+    @Override
+    public Team detachTournament(UUID teamId, UUID tournamentId) throws SQLException {
+        if (teamId == null) {
+            throw new IllegalArgumentException("Team Id cannot be null");
+        }else if (tournamentId == null) {
+            throw new IllegalArgumentException("Tournament Id cannot be null");
+        }else {
+            return teamRepository.detachTournament(teamId, tournamentId);
+        }
+    }
 }

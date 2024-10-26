@@ -14,4 +14,6 @@ public interface TeamService {
     public List<Team> getAllTeams() throws SQLException;
     public Team attachGamer(UUID teamId, UUID playerId) throws SQLException;
     public Team detachGamer(UUID teamId, UUID playerId) throws SQLException;
+    public Team attachTournament(UUID teamId, UUID tournamentId) throws SQLException;
+    public Team detachTournament(UUID teamId, UUID tournamentId) throws SQLException;
 }

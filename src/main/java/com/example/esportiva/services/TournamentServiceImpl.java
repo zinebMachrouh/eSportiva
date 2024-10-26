@@ -1,5 +1,6 @@
 package com.example.esportiva.services;
 
+import com.example.esportiva.dao.interfaces.TournamentDAO;
 import com.example.esportiva.dto.TournamentDTO;
 import com.example.esportiva.models.Tournament;
 import com.example.esportiva.repositories.interfaces.TournamentRepository;
@@ -12,9 +13,11 @@ import java.util.UUID;
 
 public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
+    private final TournamentDAO tournamentDAO;
 
-    public TournamentServiceImpl(TournamentRepository tournamentRepository) {
+    public TournamentServiceImpl(TournamentRepository tournamentRepository, TournamentDAO tournamentDAO) {
         this.tournamentRepository = tournamentRepository;
+        this.tournamentDAO = tournamentDAO;
     }
 
     @Override
@@ -96,5 +99,15 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public List<Tournament> getUpcomingTournaments() throws SQLException {
         return tournamentRepository.getUpcomingTournaments();
+    }
+
+    @Override
+    public Integer getEstimatedDuration(TournamentDTO tournament) throws SQLException {
+        if (tournament == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }else {
+            Tournament tournament1 = tournament.dtoToModel();
+            return tournamentDAO.calculateDurationEstimate(tournament1);
+        }
     }
 }
